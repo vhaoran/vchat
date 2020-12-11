@@ -8,6 +8,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/magiconair/properties/assert"
 	"github.com/vhaoran/vchat/common/ytime"
+	"github.com/vhaoran/vchat/lib/ykit"
+	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"testing"
 
@@ -92,7 +94,6 @@ func Test_cnt_insert(t *testing.T) {
 		}(i)
 	}
 
-
 }
 
 var db *gorm.DB
@@ -128,7 +129,7 @@ func Test_db_cnt_config(t *testing.T) {
 	//condiation find
 	bean := &personX{ID: 2}
 	l = make([]*personX, 0)
-	db.Find(&l, )
+	db.Find(&l)
 	assert.Equal(t, bean.ID, 2, "found!")
 	spew.Dump(bean)
 
@@ -196,4 +197,27 @@ func Test_db_time_marshal(t *testing.T) {
 		return
 	}
 	spew.Dump(l)
+}
+
+func Test_find_many(t *testing.T) {
+	err := prepareCnt()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	l := make([]personX, 0)
+
+	db.LogMode(true)
+	if err := FindMany(db, &l, bson.M{
+		"id": ykit.M{
+			"$gt": 1,
+		},
+	}); err != nil {
+		fmt.Println("------none----", err)
+		return
+	}
+	fmt.Println("----------")
+	spew.Dump(l)
+
 }
