@@ -1,0 +1,142 @@
+//for snippet用于标准返回值的微服务接口
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/go-kit/kit/endpoint"
+	tran "github.com/go-kit/kit/transport/http"
+	"github.com/vhaoran/vchat/lib/ykit"
+)
+
+const (
+$name$_H_PATH = "/$name$"
+)
+
+type (
+$name$Service interface {
+Exec(ctx context.Context,in *$name$In) (*$name$Out, error)
+}
+
+//input data $loc$
+$name$In struct {
+S string `json:"s"`
+}
+
+//output data
+$name$Out struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+// handler implements
+$name$H struct {
+base ykit.RootTran
+}
+)
+
+func (r *$name$H) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		fmt.Println("#############  $name$ ###########")
+		spew.Dump(ctx)
+
+		in := request.(*$name$In)
+		return svc.Exec(ctx,in)
+	}
+}
+
+//个人实现,参数不能修改
+func (r *$name$H) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
+return r.base.DecodeRequest(new($name$In), ctx, req)
+}
+
+//个人实现,参数不能修改
+func (r *$name$H) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
+var response *$name$Out
+if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+return nil, err
+}
+return response, nil
+}
+
+//handler for router，微服务本地接口，
+func (r *$name$H) HandlerLocal(service $name$Service,
+mid []endpoint.Middleware,
+options ...tran.ServerOption) *tran.Server {
+
+	ep := r.MakeLocalEndpoint(service)
+	for _, f := range mid {
+		ep = f(ep)
+	}
+	
+	before := tran.ServerBefore(ykit.Jwt2ctx())
+	opts := make([]tran.ServerOption, 0)
+	opts = append(opts, before)
+	opts = append(opts, options...)
+	
+
+	handler := tran.NewServer(
+		ep,
+		r.DecodeRequest,
+		r.base.EncodeResponse,
+		opts...)
+	//handler = loggingMiddleware()
+	return handler
+}
+
+//sd,proxy实现,用于etcd自动服务发现时的handler
+func (r *$name$H) HandlerSD(mid []endpoint.Middleware,
+options ...tran.ServerOption) *tran.Server {
+	return r.base.HandlerSD(
+		context.Background(),
+		cmn.MSTAG,
+		"POST",
+	$name$_H_PATH,
+		r.DecodeRequest,
+		r.DecodeResponse,
+		mid,
+		options...)
+}
+
+func (r *$name$H) ProxySD() endpoint.Endpoint {
+	return r.base.ProxyEndpointSD(
+		context.Background(),
+		cmn.MSTAG,
+		"POST",
+	$name$_H_PATH,
+		r.DecodeRequest,
+		r.DecodeResponse)
+}
+
+
+//只用于内部调用 ，不从风头调用
+var once_$name$ sync.Once
+var local_$name$_EP endpoint.Endpoint
+
+
+func (r *$name$H) Call(in $name$In) (*$name$Out, error) {
+	once_$name$.Do(func() {
+		local_$name$_EP = new($name$H).ProxySD()
+	})
+	//
+	ep := local_$name$_EP
+	//
+	result, err := ep(context.Background(), in)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*$name$Out), nil
+}
+
+
+
+
+
+
+

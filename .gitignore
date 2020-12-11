@@ -1,0 +1,9 @@
+target/
+.git/
+a.txt/
+a.log/
+*.log
+logs/
+*.test
+*.out
+.idea/
