@@ -64,6 +64,9 @@ func (r *SqlWhere) getSign(key string) string {
 		"$lt":  " < ",
 		"$lte": " <= ",
 		"$in":  " in ",
+
+		"$ne":  " != ",
+		"$nin": " not in ",
 	}
 
 	s, ok := signMap[key]
@@ -91,7 +94,7 @@ func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
 	// is > >= < <= in
 	if r.isSignLogic(k) {
 		//must be bson.D
-		exp = r.getSign(k) + " ? "
+		exp = r.getSign(k) + " (?) "
 		p = append(p, v)
 		return
 	}
