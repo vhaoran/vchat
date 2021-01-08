@@ -15,7 +15,7 @@ type SqlWhere struct {
 
 func (r *SqlWhere) GetWhere(a bson.D) (exp string, params []interface{}) {
 	if a == nil {
-		return "1 = 1", nil
+		return " 1 = 1 ", nil
 	}
 	//
 	return r.scan("", a)
