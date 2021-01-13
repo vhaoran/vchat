@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
-	golog "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -37,11 +38,11 @@ type (
 
 //指定一个确定的数据类型，进行decode
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
-	ylog.Debug("--------RootTran.go--->DeecodeRequest---")
+	//ylog.Debug("--------RootTran.go--->DeecodeRequest---")
 
-	for k, v := range req.URL.Query() {
-		ylog.Debug("--------RootTran.go--->query param---", k, ":", v)
-	}
+	//for k, v := range req.URL.Query() {
+	//	ylog.Debug("--------RootTran.go--->query param---", k, ":", v)
+	//}
 
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		ylog.Error("****** RootTran.go->DecodeRequest", err)
@@ -50,21 +51,23 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 		}
 	}
 
-	golog.Println("RootTran) DecodeRequest")
-	spew.Dump(reqDataPtr)
+	//golog.Println("RootTran) DecodeRequest")
+	//spew.Dump(reqDataPtr)
+	ylog.Debug(fmt.Sprint("------url----", req.URL.Path, "------"))
+	ylog.DebugDump("-----------传入参数(param)----", reqDataPtr)
 
 	return reqDataPtr, nil
 }
 
 //针对特定传入类型的decode
 func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) (interface{}, error) {
-	ylog.Debug("RootTran.go->DecodeRequestDefault")
+	//ylog.Debug("RootTran.go->DecodeRequestDefault")
 
 	return r.DecodeRequest(new(RequestDefault), ctx, req)
 }
 
 func (r *RootTran) EncodeRequestBuffer(_ context.Context, req *http.Request, reqData interface{}) error {
-	ylog.Debug("RootTran.go->EncodeRequestBuffer")
+	//ylog.Debug("RootTran.go->EncodeRequestBuffer")
 
 	var buf bytes.Buffer
 
@@ -76,19 +79,19 @@ func (r *RootTran) EncodeRequestBuffer(_ context.Context, req *http.Request, req
 }
 
 func (r *RootTran) EncodeResponse(ctx context.Context, wr http.ResponseWriter, res interface{}) error {
-	ylog.Debug("RootTran.go->EncodeResponse")
+	//ylog.Debug("RootTran.go->EncodeResponse")
 	return json.NewEncoder(wr).Encode(res)
 }
 
 //实现decoder
 func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) (interface{}, error) {
-	ylog.Debug("--------RootTran.go--->DecodeResponseDefault---")
+	//ylog.Debug("--------RootTran.go--->DecodeResponseDefault---")
 
 	var response Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		ylog.Error("RootTran.go->DecodeResponseDefault", err)
 		//ylog.ErrorDump(res.Body)
-		ylog.Debug("----------------------------------")
+		//ylog.Debug("----------------------------------")
 
 		return nil, err
 	}
@@ -97,11 +100,13 @@ func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) 
 
 //实现decoder
 func (r *RootTran) DecodeResponseString(_ context.Context, res *http.Response) (interface{}, error) {
-	ylog.Debug("--------RootTran.go--->DecodeResponseString---")
+	//ylog.Debug("--------RootTran.go--->DecodeResponseString---")
 	buf := make([]byte, res.ContentLength*2)
 
 	i, err := res.Body.Read(buf)
 	if err != nil {
+		err = errors.New(fmt.Sprint("错误：RootTran.go--DecodeResponseString:- ", err.Error()))
+		ylog.Error(err.Error())
 		return "", err
 	}
 
@@ -408,7 +413,7 @@ func (r *RootTran) FactorySD(
 	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
 	mid ...endpoint.Middleware) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
-		ylog.Debug("--------RootTran.go->factory->instance---", instance)
+		//ylog.Debug("--------RootTran.go->factory->instance---", instance)
 
 		if !strings.HasPrefix(instance, "http") {
 			instance = "http://" + instance
@@ -445,7 +450,7 @@ func (r *RootTran) FactorySD(
 }
 
 func (r *RootTran) DecodeResponseMap(ctx context.Context, res *http.Response) (interface{}, error) {
-	ylog.Debug("RootTran.go->DecodeResponseMap")
+	//ylog.Debug("RootTran.go->DecodeResponseMap")
 
 	var response map[string]interface{} = make(map[string]interface{})
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
