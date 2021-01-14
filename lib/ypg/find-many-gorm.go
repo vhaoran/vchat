@@ -42,3 +42,34 @@ func FindMany(db *gorm.DB, l interface{}, where bson.M, cols ...string) error {
 
 	return nil
 }
+func FindOne(db *gorm.DB, retPtr interface{}, where bson.M, cols ...string) error {
+	if !reflectUtils.IsPointer(retPtr) {
+		return errors.New("passed retPtr is not pointer")
+	}
+
+	selectStr := ""
+	if len(cols) > 0 {
+		selectStr = cols[0]
+	}
+
+	//-------- -----------------------------
+	exp, p := new(ypage.SqlWhereMap).GetWhere(where)
+
+	var err error
+	if len(selectStr) > 0 {
+		err = db.
+			Select(selectStr).
+			Where(exp, p...).
+			First(retPtr).Error
+	} else {
+		err = db.
+			Where(exp, p...).
+			First(retPtr).Error
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
