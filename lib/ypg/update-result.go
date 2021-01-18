@@ -13,7 +13,7 @@ func ResultOfOrm(db *gorm.DB) error {
 		return nil
 	}
 	if err != nil {
-		return err
+		return tranErr(err)
 	}
 	return errors.New("没有找到需要处理的内容")
 }
