@@ -11,7 +11,7 @@ import (
 
 type BaseModel struct {
 	CreatedAt ytime.Date `json:"created_at"`
-	UpdatedAt ytime.Date `json:"update_at"`
+	UpdatedAt ytime.Date `json:"updated_at"`
 	//DelTime     ytime.Date
 	Ver int64 `json:"ver"`
 }
