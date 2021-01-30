@@ -18,11 +18,16 @@ func (r *SqlWhere) GetWhere(a bson.D) (exp string, params []interface{}) {
 		return " 1 = 1 ", nil
 	}
 	//
-	return r.scan("", a)
+	exp, params, _ = r.scan("", a)
+	return
 }
 
 func (r *SqlWhere) isOr(sign string) bool {
 	return sign == "$or"
+}
+
+func (r *SqlWhere) isSignInOrNin(sign string) bool {
+	return sign == "$in" || sign == "$nin"
 }
 
 func (r *SqlWhere) isSignConn(s string) bool {
@@ -34,7 +39,8 @@ func (r *SqlWhere) isSignLogic(s string) bool {
 	return len(r.getSign(s)) > 0
 }
 
-func (r *SqlWhere) scan(sign string, m bson.D) (exp string, params []interface{}) {
+func (r *SqlWhere) scan(sign string, m bson.D) (exp string, params []interface{}, retOk bool) {
+	retOk = false
 	exp = ""
 	params = make([]interface{}, 0)
 
@@ -44,7 +50,11 @@ func (r *SqlWhere) scan(sign string, m bson.D) (exp string, params []interface{}
 	}
 
 	for _, v := range m {
-		str, p := r.getE(v)
+		str, p, ok := r.getE(v)
+		if !ok {
+			continue
+		}
+
 		if len(exp) == 0 {
 			exp = str
 		} else {
@@ -54,6 +64,7 @@ func (r *SqlWhere) scan(sign string, m bson.D) (exp string, params []interface{}
 		params = append(params, p...)
 	}
 
+	retOk = len(exp) > 0 && len(params) > 0
 	return
 }
 
@@ -76,7 +87,8 @@ func (r *SqlWhere) getSign(key string) string {
 	return ""
 }
 
-func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
+func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}, ok bool) {
+	ok = false
 	p = make([]interface{}, 0)
 
 	k := m.Key
@@ -93,7 +105,15 @@ func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
 
 	// is > >= < <= in
 	if r.isSignLogic(k) {
+		//数组要判断是否为空,如果为空，则不再进行参数添加
+		if r.isSignInOrNin(k) {
+			if reflectUtils.IsEmptySlice(v) {
+				return
+			}
+		}
+
 		//must be bson.D
+		ok = true
 		exp = r.getSign(k) + " (?) "
 		p = append(p, v)
 		return
@@ -101,9 +121,12 @@ func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
 
 	//--------------value-----------------------------------
 	if r.IsE(v) {
-		exp1, p1 := r.getE(v.(primitive.E))
-		exp = k + exp1
-		p = append(p, p1...)
+		exp1, p1, good := r.getE(v.(primitive.E))
+		ok = good
+		if ok {
+			exp = k + exp1
+			p = append(p, p1...)
+		}
 		return
 	}
 
@@ -112,9 +135,12 @@ func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
 		//--------is map -----------------------------
 		es := r.Map2E(v)
 		if len(es) > 0 {
-			exp1, p1 := r.getE(es[0])
-			exp = fmt.Sprintf(" %s %s ", k, exp1)
-			p = append(p, p1...)
+			exp1, p1, good := r.getE(es[0])
+			ok = good
+			if ok {
+				exp = fmt.Sprintf(" %s %s ", k, exp1)
+				p = append(p, p1...)
+			}
 			return
 		}
 		return
@@ -122,6 +148,7 @@ func (r *SqlWhere) getE(m primitive.E) (exp string, p []interface{}) {
 
 	exp = fmt.Sprintf(" %s = ?", k)
 	p = append(p, v)
+	ok = true
 	return
 }
 

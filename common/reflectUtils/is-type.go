@@ -23,6 +23,23 @@ func IsSlice(a interface{}) bool {
 	return false
 }
 
+func IsEmptySlice(a interface{}) bool {
+	if a == nil {
+		return true
+	}
+
+	if !IsSlice(a) {
+		return true
+	}
+
+	tp := reflect.Indirect(reflect.ValueOf(a))
+	switch tp.Kind() {
+	case reflect.Slice, reflect.Array:
+		return tp.Len() == 0
+	}
+	return false
+}
+
 func IsStruct(a interface{}) bool {
 	tp := reflect.Indirect(reflect.ValueOf(a))
 	switch tp.Kind() {

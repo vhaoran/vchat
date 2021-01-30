@@ -12,12 +12,13 @@ func Test_sql_where_1(t *testing.T) {
 	m := bson.D{
 		{"id", 1},
 		{"user_name", "whr"},
+		{"$in", []int{1}},
+		{"$nin", []int{1, 2, 3}},
 	}
 
 	s, p := obj.GetWhere(m)
 	log.Println("----------", s, "------------")
 	spew.Dump("p:", p)
-
 }
 
 func Test_sql_where_2(t *testing.T) {
