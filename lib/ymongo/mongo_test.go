@@ -16,7 +16,8 @@ import (
 )
 
 var cfg = yconfig.MongoConfig{
-	URL: "mongodb://root:password@172.2.2.2:27017/test?&authSource=admin",
+	//URL: "mongodb://root:password@172.2.2.2:27017/test?&authSource=admin",
+	URL: "mongodb://192.168.0.99:27017/?&slaveOk=true",
 	//URL: "mongodb://root:password@192.168.0.99:27017/test?&authSource=admin",
 
 	Options: &yconfig.MongoOptions{
@@ -27,10 +28,10 @@ var cfg = yconfig.MongoConfig{
 
 type (
 	Good struct {
-		ID   int    `json:"id,omitempty"`
-		Name string `json:"name,omitempty"`
-		Age int `json:"age,omitempty"   bson:"age,omitempty"`
-		Salary int `json:"salary,omitempty"   bson:"salary,omitempty"`
+		ID     int    `json:"id,omitempty"`
+		Name   string `json:"name,omitempty"`
+		Age    int    `json:"age,omitempty"   bson:"age,omitempty"`
+		Salary int    `json:"salary,omitempty"   bson:"salary,omitempty"`
 	}
 )
 
@@ -207,6 +208,5 @@ func Test_m2s(t *testing.T) {
 }
 
 func Test_test_aggregate(t *testing.T) {
-
 
 }

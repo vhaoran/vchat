@@ -87,6 +87,7 @@ func DebugDump(a ...interface{}) {
 
 func Debug(a ...interface{}) {
 	if !ok() {
+		fmt.Println(a...)
 		return
 	}
 

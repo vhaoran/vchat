@@ -18,6 +18,9 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/lib/pq v1.1.1
+	github.com/liuzl/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
+	github.com/liuzl/da v0.0.0-20180704015230-14771aad5b1d // indirect
+	github.com/liuzl/gocc v0.0.0-20200216023908-f8cb162baf44 // indirect
 	github.com/magiconair/properties v1.8.1
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/modern-go/reflect2 v1.0.1 // indirect
@@ -25,8 +28,10 @@ require (
 	github.com/qiniu/api.v7/v7 v7.5.0
 	github.com/robbert229/jwt v2.0.0+incompatible
 	github.com/satori/go.uuid v1.2.0
+	github.com/sgoby/opencc v0.0.0-20181105060730-5b3b1de2620a
 	github.com/spf13/viper v1.6.1
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
+	github.com/teamlint/opencc v0.2.0
 	github.com/tidwall/gjson v1.3.5
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect

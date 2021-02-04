@@ -1,6 +1,7 @@
 package ypage
 
 import (
+	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
@@ -95,4 +96,19 @@ func Test_slice_d(t *testing.T) {
 	log.Println("-----bson.M-----", "------------")
 	spew.Dump("bean:", bean)
 	//
+}
+
+func Test_GetWhere_map(t *testing.T) {
+	//
+	sql, p := new(SqlWhereMap).GetWhere(bson.M{
+		"id":   1,
+		" 1 = 1 \";and \"code": "23",
+		"$in":  []int{},
+		"x":    bson.M{"$nin": []int{1, 2, 3}},
+	})
+
+	spew.Dump(p)
+	fmt.Println("--------------")
+	spew.Dump(sql)
+
 }

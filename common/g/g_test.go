@@ -2,6 +2,7 @@ package g
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"log"
 	"testing"
 )
@@ -58,4 +59,11 @@ func Test_path_exists(t *testing.T) {
 		fmt.Println("-----------", err)
 	}
 
+}
+
+func Test_cn2tra(t *testing.T) {
+	s := "迪拜（阿拉伯语：دبي，英语：Dubai），是阿拉伯联合酋长国人口最多的城市，位于波斯湾东南海岸，迪拜也是组成阿联酋七个酋长国之一——迪拜酋长国的首都。"
+	str, err := cn2tradiation(s)
+	spew.Dump(err)
+	spew.Dump(str)
 }
