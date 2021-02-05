@@ -13,6 +13,7 @@ import (
 	"github.com/vhaoran/vchat/lib/ymqa"
 	"github.com/vhaoran/vchat/lib/ypg"
 	"github.com/vhaoran/vchat/lib/yqiniu"
+	"github.com/vhaoran/vchat/lib/yred"
 	"github.com/vhaoran/vchat/lib/yredis"
 )
 
@@ -20,13 +21,17 @@ type LoadOption struct {
 	LoadMicroService bool //0
 	LoadEtcd         bool //1
 	LoadPg           bool //2
-	LoadRedis        bool //3
-	LoadMongo        bool //4
-	LoadMq           bool //5
-	LoadRabbitMq     bool //6
-	LoadJwt          bool //7
-	LoadES           bool //8
-	LoadQiniu        bool //9
+	//load redis cluster
+	LoadRedis bool //3
+	//load redis single server
+	LoadRed      bool
+	LoadMongo    bool //4
+	LoadMq       bool //5
+	LoadRabbitMq bool //6
+	LoadJwt      bool //7
+	LoadES       bool //8
+	LoadQiniu    bool //9
+
 }
 
 func InitModulesOfAll() (*yconfig.YmlConfig, error) {
@@ -35,6 +40,7 @@ func InitModulesOfAll() (*yconfig.YmlConfig, error) {
 		LoadEtcd:         true,
 		LoadPg:           true,
 		LoadRedis:        true,
+		LoadRed:          true,
 		LoadMongo:        true,
 		LoadMq:           false,
 		LoadRabbitMq:     true,
@@ -83,15 +89,26 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 		ylog.Debug("postgres connected ok")
 	}
 
-	//--------load redis -----------------------------
+	//--------load redis -cluster----------------------------
 	//redis cluster连接设置 xred
 	if opt.LoadRedis {
 		//set X
-		ylog.Debug("redis connecting...", cfg.Redis.Addrs)
+		ylog.Debug("redis cluster connecting...", cfg.Redis.Addrs)
 		if err := yredis.InitRedis(cfg.Redis); err != nil {
 			return nil, err
 		}
-		ylog.Debug("redis connected ok")
+		ylog.Debug("redis cluster  connected ok")
+	}
+
+	//--------load redis single server-----------------------------
+	//redis cluster连接设置 xred
+	if opt.LoadRed {
+		//set X
+		ylog.Debug("redis single server connecting...", cfg.Redis.Addrs)
+		if err := yred.InitRedis(cfg.Redis); err != nil {
+			return nil, err
+		}
+		ylog.Debug("redis single connected ok")
 	}
 
 	//--------load emq -----------------------------

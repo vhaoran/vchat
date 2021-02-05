@@ -17,5 +17,6 @@ func Test_get_yml_config(t *testing.T) {
 	fmt.Println("-----------------")
 	spew.Dump(bean.Qiniu)
 	fmt.Println("-----------------")
-
+	spew.Dump(bean.Bot)
+	fmt.Println("-----------------")
 }
