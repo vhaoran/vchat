@@ -76,6 +76,9 @@ func ok() bool {
 
 func DebugDump(a ...interface{}) {
 	if !ok() {
+		for _, v := range a {
+			spew.Dump(v)
+		}
 		return
 	}
 
@@ -98,6 +101,7 @@ func Debug(a ...interface{}) {
 
 func DebugF(format string, a ...interface{}) {
 	if !ok() {
+		fmt.Printf(format, a...)
 		return
 	}
 
