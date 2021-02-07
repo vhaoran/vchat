@@ -67,3 +67,10 @@ func Test_cn2tra(t *testing.T) {
 	spew.Dump(err)
 	spew.Dump(str)
 }
+
+func Test_file_hash(t *testing.T) {
+	p := "/home/whr/a.txt"
+	h, err := FileHash(p)
+	spew.Dump(err)
+	fmt.Println("----------- ----", h)
+}
