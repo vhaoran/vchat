@@ -278,10 +278,16 @@ func (r *MongoClientWrapper) DoPageMap(slicePtr interface{},
 
 	bean.ValidateAdjust()
 
-	allCount, err := r.DoCountMap(db, tb, bean.Where)
-	if err != nil {
-		return nil, err
+	allCount := bean.RowsCount
+	var err error
+
+	if allCount <= 0 {
+		allCount, err = r.DoCountMap(db, tb, bean.Where)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	bean.RowsCount = allCount
 	bean.PagesCount = bean.GetPagesCount()
 
