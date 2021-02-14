@@ -99,6 +99,15 @@ func Debug(a ...interface{}) {
 	}
 }
 
+func Println(a ...interface{}) {
+	if !ok() {
+		fmt.Println(a...)
+		return
+	}
+
+	w.Println(a)
+}
+
 func DebugF(format string, a ...interface{}) {
 	if !ok() {
 		fmt.Printf(format, a...)
