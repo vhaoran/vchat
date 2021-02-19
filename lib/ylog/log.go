@@ -105,7 +105,7 @@ func Println(a ...interface{}) {
 		return
 	}
 
-	w.Println(a)
+	w.Println(a...)
 }
 
 func DebugF(format string, a ...interface{}) {
