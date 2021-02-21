@@ -38,13 +38,13 @@ func publishWrap(conn *amqp.Connection, data *AMqData) error {
 		nil,   // arguments
 	)
 	if err != nil {
-		ylog.Error("amqClient.go->publishWrap", err)
+		ylog.Error("amqClient.go->publishWrap,err:", err)
 		return err
 	}
 
 	body, er1 := g.GetBufferForMq(data.Data)
 	if er1 != nil {
-		ylog.Error("amqClient.go->", er1)
+		ylog.Error("amqClient.go->publishWrap", er1)
 		return er1
 	}
 	if len(body) == 0 {
@@ -93,7 +93,7 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 		nil,     // args
 	)
 	if er1 != nil {
-		ylog.Error("amqClient.go->", er1)
+		ylog.Error("amqClient.go->consumeWrap", er1)
 		return er1
 	}
 
@@ -109,7 +109,7 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 				func() {
 					defer func() {
 						if err := recover(); err != nil {
-							ylog.Error("amqClient.go->", err)
+							ylog.Error("amqClient.go->consumeWrap->deferCallback", err)
 
 						}
 					}()

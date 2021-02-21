@@ -66,7 +66,7 @@ func CacheGet(keyPrefix string,
 }
 
 func keyOfCommon(key string) string {
-	return fmt.Sprintf("%s/%s", RedisModuleName, key)
+	return fmt.Sprintf("%s/%s", RedModuleName, key)
 }
 
 func CacheClear(keyPrefix string, keys ...interface{}) {

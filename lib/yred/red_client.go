@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	X               *redis.Client
-	RedisModuleName = ""
+	X             *redis.Client
+	RedModuleName = ""
 )
 
 func InitRedis(cfg yconfig.RedisConfig) error {
