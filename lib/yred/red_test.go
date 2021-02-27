@@ -62,3 +62,14 @@ func Test_aa(t *testing.T) {
 	ylog.Debug("--------waiting about 20 seconds--- ----")
 	time.Sleep(time.Second * 20)
 }
+
+func call(c *redis.Client) bool {
+	if c == nil {
+		return false
+	}
+	return true
+}
+
+func Test_aaa(t *testing.T) {
+
+}
