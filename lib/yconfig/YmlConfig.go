@@ -3,6 +3,7 @@ package yconfig
 import (
 	"errors"
 	"fmt"
+	"github.com/vhaoran/vchat/common/reflectUtils"
 	"os"
 	"path"
 	"time"
@@ -204,4 +205,61 @@ func GetYmlConfig() (*YmlConfig, error) {
 		return nil, err
 	}
 	return yml, nil
+}
+
+func GetYmlConfigOfType(ptrOfConfig interface{}, configNames ...string) error {
+	if !reflectUtils.IsPointer(ptrOfConfig) {
+		return errors.New("配置文件的类型必须是一个指针")
+	}
+	configName := "config"
+	if len(configNames) > 0 {
+		configName = configNames[0]
+	}
+	//----------------------------------------------
+	var (
+		pwd      string
+		execPath string
+		err      error
+	)
+
+	if pwd, err = os.Getwd(); err != nil {
+		return errors.New("get ymlConfig err," + err.Error())
+	}
+	l := []string{
+		"../",
+		"../../",
+		"../../../",
+		"../../../../",
+		"../../../../../"}
+
+	vp := viper.New()
+	vp.AddConfigPath(pwd)
+	for _, v := range l {
+		vp.AddConfigPath(path.Join(pwd, v))
+	}
+
+	//-----------add execPath-----------------
+	if execPath, err = g.GetExecPath(); err == nil {
+		vp.AddConfigPath(execPath)
+	}
+
+	vp.SetConfigName(configName)
+	if fileName := os.Getenv("vchat_yml_file"); len(fileName) > 0 {
+		fmt.Println("------------vchat_yml_file hitted-----", fileName)
+		//pwd = s
+		vp.SetConfigName(fileName)
+	} else {
+		fmt.Println("used default config name " + configName + ".yml")
+	}
+
+	vp.SetConfigType("yml")
+	//yml := &YmlConfig{}
+	if err = vp.ReadInConfig(); err != nil {
+		return err
+	}
+
+	if err = vp.UnmarshalExact(ptrOfConfig); err != nil {
+		return err
+	}
+	return nil
 }
