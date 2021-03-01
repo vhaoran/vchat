@@ -14,3 +14,19 @@ func NewCache(loadFunc cache.LoaderFunc) cache.LoadingCache {
 	)
 	return c
 }
+
+func NewCacheExpire(length int, expire time.Duration) cache.Cache {
+	// Create a new cache
+	if length < 100 {
+		length = 100
+	}
+	if expire < time.Second {
+		expire = time.Second
+	}
+
+	return cache.New(
+		cache.WithMaximumSize(length),
+		cache.WithExpireAfterAccess(expire),
+		cache.WithRefreshAfterWrite(expire),
+	)
+}
