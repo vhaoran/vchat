@@ -87,7 +87,7 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 	}
 
 	r.count.Inc()
-	log.Println("mq pool added,len (", r.count.Load())
+	//log.Println("mq pool added,len (", r.count.Load())
 
 	go func() {
 		//出错时，释放连接数量
@@ -99,7 +99,7 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 
 		//start := time.Now()
 		endLoop := false
-		log.Println("....begin wait")
+		//log.Println("....begin wait")
 		for !endLoop {
 			select {
 			case bean, ok := <-r.queue:
