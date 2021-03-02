@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-type StrData struct {
+type Str struct {
 	Text string
 }
 
-func NewStrData(s string) *StrData {
-	return &StrData{
+func NewStrData(s string) *Str {
+	return &Str{
 		Text: s,
 	}
 }
 
 //只需要传入一个，没有时默认为0
-func (r *StrData) AsInt64(defValues ...int64) int64 {
+func (r *Str) AsInt64(defValues ...int64) int64 {
 	i0 := int64(0)
 	if len(defValues) > 0 {
 		i0 = defValues[0]
@@ -32,7 +32,7 @@ func (r *StrData) AsInt64(defValues ...int64) int64 {
 	return i
 }
 
-func (r *StrData) AsInt(defValues ...int) int {
+func (r *Str) AsInt(defValues ...int) int {
 	i0 := int(0)
 	if len(defValues) > 0 {
 		i0 = defValues[0]
@@ -45,14 +45,14 @@ func (r *StrData) AsInt(defValues ...int) int {
 	return i
 }
 
-func (r *StrData) AsStr() string {
+func (r *Str) AsStr() string {
 	return r.Text
 }
-func (r *StrData) Str() string {
+func (r *Str) Str() string {
 	return r.Text
 }
 
-func (r *StrData) AsBool(defValues ...bool) bool {
+func (r *Str) AsBool(defValues ...bool) bool {
 	b := false
 	if len(defValues) > 0 {
 		b = defValues[0]
@@ -78,11 +78,19 @@ func (r *StrData) AsBool(defValues ...bool) bool {
 }
 
 //from json str to object
-func (r *StrData) Unmarshal(ptr interface{}) error {
+func (r *Str) Unmarshal(ptr interface{}) error {
 	//不是指针是原样返回
 	if !reflectUtils.IsPointer(ptr) {
 		return errors.New("passed param must be a pointer")
 	}
 	//----------------------------------------------
 	return json.Unmarshal([]byte(r.Text), ptr)
+}
+
+func (r *Str) RmSign(signList ...string) *Str {
+	str := r.Text
+	for _, v := range signList {
+		str = strings.Replace(str, v, "", -1)
+	}
+	return NewStrData(str)
 }

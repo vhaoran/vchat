@@ -15,5 +15,11 @@ func Test_aaa(t *testing.T) {
 		fmt.Println("as str:", NewStrData(s).AsStr())
 
 	}
-
+}
+func Test_rm_sign(t *testing.T) {
+	//
+	pat := "abcdefg\n\r\taaeefffgg"
+	s := NewStrData(pat).RmSign("\n", "a", "b", "c").Str()
+	fmt.Println("---", pat)
+	fmt.Println("---", s)
 }
