@@ -18,6 +18,12 @@ func NewStrData(s string) *Str {
 	}
 }
 
+func NewStr(s string) *Str {
+	return &Str{
+		Text: s,
+	}
+}
+
 //只需要传入一个，没有时默认为0
 func (r *Str) AsInt64(defValues ...int64) int64 {
 	i0 := int64(0)
