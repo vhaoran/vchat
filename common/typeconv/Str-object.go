@@ -100,3 +100,21 @@ func (r *Str) RmSign(signList ...string) *Str {
 	}
 	return NewStrData(str)
 }
+
+func (r *Str) ContainsAny(multStr ...string) bool {
+	for _, v := range multStr {
+		if strings.Contains(r.Text, v) {
+			return true
+		}
+	}
+	return false
+}
+
+func (r *Str) ContainsAll(multStr ...string) bool {
+	for _, v := range multStr {
+		if !strings.Contains(r.Text, v) {
+			return false
+		}
+	}
+	return true
+}
