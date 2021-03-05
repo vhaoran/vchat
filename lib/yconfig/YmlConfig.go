@@ -37,8 +37,6 @@ type (
 		Log      LogConfig   `json:"log,omitempty"`
 		Jwt      JwtConfig   `json:"jwt,omitempty"`
 		Qiniu    QiniuConfig `json:"qiniu,omitempty"`
-		//bot config
-		Bot BotConfig `json:"bot,omitempty"`
 	}
 
 	ETCDConfig struct {
