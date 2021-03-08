@@ -26,7 +26,7 @@ func GetBufferForMq(in interface{}) ([]byte, error) {
 	}
 
 	switch v.Type().Kind() {
-	case reflect.Struct, reflect.Array:
+	case reflect.Struct, reflect.Array, reflect.Slice:
 		s, err = json.Marshal(in)
 		if err != nil {
 			return nil, err
