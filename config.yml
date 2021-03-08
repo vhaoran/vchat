@@ -75,12 +75,3 @@ qiniu:
   secretKey: "EkZHh2f3vLwVw2v3orRsmK25dVWfSy_wDCOofjVD"
   buckPermanent: "permanent-wlkj"
   buckTemp: "temporary-wlkj"
-bot:
-  tokens:
-    - "aaa"
-    - "bbb"
-  role: "craw"
-
-
-
-

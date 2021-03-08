@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/olivere/elastic/v7"
+	es "github.com/olivere/elastic/v7"
 
 	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/yes"
@@ -63,7 +63,6 @@ func Test_add_batch(t *testing.T) {
 }
 
 func Test_add_n(t *testing.T) {
-
 	bean := Product{
 		//ID:       i,
 		Name:     fmt.Sprint("name_", time.Now().UnixNano()),
@@ -78,19 +77,58 @@ func Test_add_n(t *testing.T) {
 	ylog.DebugDump("--------yes_search_test.go------", r)
 }
 
-func Test_match(t *testing.T) {
-	q := elastic.NewTermQuery("tag", "汽车")
+func Test_term(t *testing.T) {
+	q := es.NewTermQuery("tag", "汽车")
 
 	r, err := yes.X.Search("index").
 		Query(q).
 		Do(context.Background())
 	ylog.Debug("--------yes_search_test.go------", err)
 	ylog.DebugDump("--------yes_search_test.go------", r)
+	output(r)
+}
+
+func Test_match_all(t *testing.T) {
+	//
+	//"query":{
+	//	"match_all":{}
+	//}
+	q := es.NewRawStringQuery(`
+    {
+		"match_all":{}
+    }
+    `)
+
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+func Test_match_field_single(t *testing.T) {
+	/*
+		"match" : {
+		         "city":"pune"
+		      }
+	*/
+	q := es.NewRawStringQuery(`
+    {
+	"match" : {
+	         "tag":"汽车"
+	      }	
+    }
+    `)
+
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
 }
 
 //
-func Test_match_one_field(t *testing.T) {
-	q := elastic.NewRawStringQuery(`
+func Test_match_raw_str_query(t *testing.T) {
+	q := es.NewRawStringQuery(`
       {
               "match": {
                  "tag": "飞机"
@@ -105,7 +143,7 @@ func Test_match_one_field(t *testing.T) {
 }
 
 func Test_match_multi_valueOfOneField_or(t *testing.T) {
-	q := elastic.NewRawStringQuery(`
+	q := es.NewRawStringQuery(`
       {
 		"bool": {
 		  "should": [
@@ -125,7 +163,7 @@ func Test_match_multi_valueOfOneField_or(t *testing.T) {
 }
 
 func Test_match_multi_valueOfOneField_all(t *testing.T) {
-	q := elastic.NewRawStringQuery(`
+	q := es.NewRawStringQuery(`
       {
         "query_string" : {
             "default_field" : "tag",
@@ -142,7 +180,7 @@ func Test_match_multi_valueOfOneField_all(t *testing.T) {
 }
 
 func Test_match_multi_field_multi_valueOfOneField_all(t *testing.T) {
-	q := elastic.NewRawStringQuery(`
+	q := es.NewRawStringQuery(`
       {
         "query_string" : {
            "fields": [
@@ -162,7 +200,7 @@ func Test_match_multi_field_multi_valueOfOneField_all(t *testing.T) {
 }
 
 func Test_match_multi_field_multi_valueOfOneField_all_qStr(t *testing.T) {
-	q := elastic.NewQueryStringQuery("(白云) and (飞机) and (魏浩然)").Field("tag").
+	q := es.NewQueryStringQuery("(白云) and (飞机) and (魏浩然)").Field("tag").
 		Field("remark").
 		MinimumShouldMatch("3")
 
@@ -173,7 +211,7 @@ func Test_match_multi_field_multi_valueOfOneField_all_qStr(t *testing.T) {
 	output(r)
 }
 
-func output(r *elastic.SearchResult) {
+func output(r *es.SearchResult) {
 	fmt.Println("-------- -----------------------------")
 	for _, v := range r.Hits.Hits {
 		str, err := json.Marshal(v)
@@ -184,3 +222,4 @@ func output(r *elastic.SearchResult) {
 		}
 	}
 }
+
