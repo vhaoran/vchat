@@ -118,3 +118,18 @@ func (r *Str) ContainsAll(multStr ...string) bool {
 	}
 	return true
 }
+
+//中间用seg分割
+func (r *Str) RepeatN(n int, segs ...string) *Str {
+	s := r.Text
+	str := ""
+	if len(segs) > 0 {
+		str = segs[0]
+	}
+
+	//----------------------------------------------
+	for i := 0; i < n; i++ {
+		s += str + r.Text
+	}
+	return NewStr(s)
+}
