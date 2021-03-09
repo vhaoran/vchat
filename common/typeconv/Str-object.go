@@ -38,6 +38,20 @@ func (r *Str) AsInt64(defValues ...int64) int64 {
 	return i
 }
 
+//只需要传入一个，没有时默认为0
+func (r *Str) AsFloat64(defValues ...float64) float64 {
+	i0 := float64(0)
+	if len(defValues) > 0 {
+		i0 = defValues[0]
+	}
+	//----------------------------------------------
+	i, err := strconv.ParseFloat(r.Text, 64)
+	if err != nil {
+		return i0
+	}
+	return i
+}
+
 func (r *Str) AsInt(defValues ...int) int {
 	i0 := int(0)
 	if len(defValues) > 0 {

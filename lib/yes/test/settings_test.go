@@ -18,7 +18,7 @@ func Test_settings(t *testing.T) {
 	// ik_smart
 	// ik_max_word
 	body := `
-{
+   {
 	"settings": {
 		"index": {
 		  "analysis": {
