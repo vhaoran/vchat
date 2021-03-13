@@ -85,3 +85,10 @@ func Test_find(t *testing.T) {
 	//ylog.DebugDump("----result---", r)
 	output(r)
 }
+func Test_count(t *testing.T) {
+	//
+	i,err := yes.X.Count("abc").Do(context.Background())
+	ylog.Debug("--------settings_test.go--- ----", err)
+	ylog.Debug("--------settings_test.go---count ----", i)
+
+}
