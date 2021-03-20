@@ -53,6 +53,13 @@ func OfStr(in string) (Date, error) {
 	return Date{out}, err
 }
 
+//OfDatetime e.g:2001-01-01
+func OfStrShort(in string) (Date, error) {
+	in += " 00:00:00"
+	out, err := time.ParseInLocation(CustomDateFmt, in, time.Local)
+	return Date{out}, err
+}
+
 func OfTime(t time.Time) Date {
 	return Date{t}
 }
