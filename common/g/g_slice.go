@@ -25,9 +25,9 @@ func InSlice(src interface{}, l interface{}) bool {
 
 func In(src interface{}, l ...interface{}) bool {
 	for _, v := range l {
-		if src == v {
-			return true
+		if src != v {
+			return false
 		}
 	}
-	return false
+	return true
 }
