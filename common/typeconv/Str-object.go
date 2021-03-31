@@ -107,6 +107,20 @@ func (r *Str) Unmarshal(ptr interface{}) error {
 	return json.Unmarshal([]byte(r.Text), ptr)
 }
 
+func (r *Str) Replace(src, dst string) *Str {
+	str := r.Text
+	str = strings.Replace(str, src, dst, -1)
+	return NewStrData(str)
+}
+
+func (r *Str) ReplaceMult(m map[string]string) *Str {
+	str := r.Text
+	for k, v := range m {
+		str = strings.Replace(str, k, v, -1)
+	}
+	return NewStrData(str)
+}
+
 func (r *Str) RmSign(signList ...string) *Str {
 	str := r.Text
 	for _, v := range signList {
