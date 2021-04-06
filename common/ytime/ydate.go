@@ -47,6 +47,15 @@ func OfNow() Date {
 	return Date{Time: time.Now()}
 }
 
+func OfUnix(unix int64) Date {
+	return Date{Time: time.Unix(unix, 0)}
+}
+
+func OfUnixNano(unixNano int64) Date {
+	unix := unixNano / 1e9
+	return OfUnix(unix)
+}
+
 //OfDatetime ...
 func OfStr(in string) (Date, error) {
 	out, err := time.ParseInLocation(CustomDateFmt, in, time.Local)
