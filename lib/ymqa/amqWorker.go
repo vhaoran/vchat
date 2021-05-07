@@ -145,7 +145,7 @@ func (r *AMqWorker) getSleepDuration(connCount int64) time.Duration {
 }
 
 func (r *AMqWorker) Publish(topic string, msg interface{}) error {
-	qos := byte(0)
+	qos := byte(200)
 	bean := &AMqData{
 		Queue: topic,
 		Qos:   qos,

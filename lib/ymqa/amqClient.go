@@ -21,6 +21,7 @@ func getCntOfRabbitMQ(url string) (*amqp.Connection, error) {
 
 func publishWrap(conn *amqp.Connection, data *AMqData) error {
 	ch, err := conn.Channel()
+
 	if err != nil {
 		return errors.New("没有获取到rabbit连接")
 	}
