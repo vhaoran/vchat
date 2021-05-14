@@ -16,9 +16,7 @@ func Test_es_cnt(t *testing.T) {
 	}
 
 	c, err := NewESCnt(cfg)
-	fmt.Println("----------------")
-	spew.Dump( err)
+	fmt.Println("------ok----------")
+	spew.Dump(err)
 	spew.Dump(c)
 }
-
-
