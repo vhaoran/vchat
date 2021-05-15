@@ -33,7 +33,7 @@ func publishWrap(conn *amqp.Connection, data *AMqData) error {
 	q, err := ch.QueueDeclare(
 		queue, // name
 		true,  // durable
-		false, // delete when unused
+		true,  // delete when unused
 		false, // exclusive
 		false, // no-wait
 		nil,   // arguments
