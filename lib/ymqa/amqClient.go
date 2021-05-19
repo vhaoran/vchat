@@ -32,7 +32,7 @@ func publishWrap(conn *amqp.Connection, data *AMqData) error {
 	queue := data.Queue
 	q, err := ch.QueueDeclare(
 		queue, // name
-		true,  // durable
+		false, // durable
 		true,  // delete when unused
 		false, // exclusive
 		false, // no-wait
@@ -74,7 +74,7 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 
 	q, err := ch.QueueDeclare(
 		queue, // name
-		true,  // durable
+		false, // durable
 		true,  // delete when unused
 		false, // exclusive
 		false, // no-wait
